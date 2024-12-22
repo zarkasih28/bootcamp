@@ -1,0 +1,90 @@
+describe('OrangeHRM Login Tests', function() {
+
+  it('should log in successfully with valid credentials', function() {
+    // Mengunjungi halaman login
+    cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+
+    // Mengisi username dan password yang valid
+    cy.get('input[name="username"]').type('Admin');
+    cy.get('input[name="password"]').type('admin123');
+
+    // Mengklik tombol login
+    cy.get('button[type="submit"]').click();
+
+    // Memastikan URL mengandung 'dashboard' setelah login berhasil
+    cy.url().should('include', '/web/index.php/dashboard');
+    // Memastikan bahwa halaman dashboard memuat elemen dengan class 'oxd-topbar-header-breadcrumb'
+    cy.get('.oxd-topbar-header-breadcrumb').should('contain', 'Dashboard');
+  });
+
+  it('should show an error message for invalid username', function() {
+    // Mengunjungi halaman login
+    cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+
+    // Mengisi username yang salah dan password yang benar
+    cy.get('input[name="username"]').type('InvalidUser');
+    cy.get('input[name="password"]').type('admin123');
+
+    // Mengklik tombol login
+    cy.get('button[type="submit"]').click();
+
+    // Memastikan bahwa pesan error muncul
+    cy.get('.oxd-alert-content').should('contain', 'Invalid credentials');
+  });
+
+  it('should show an error message for invalid password', function() {
+    // Mengunjungi halaman login
+    cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+
+    // Mengisi username yang benar dan password yang salah
+    cy.get('input[name="username"]').type('Admin');
+    cy.get('input[name="password"]').type('InvalidPass');
+
+    // Mengklik tombol login
+    cy.get('button[type="submit"]').click();
+
+    // Memastikan bahwa pesan error muncul
+    cy.get('.oxd-alert-content').should('contain', 'Invalid credentials');
+  });
+
+  it('should show an error message when both username and password are empty', function() {
+    // Mengunjungi halaman login
+    cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+
+    // Mengklik tombol login tanpa mengisi username dan password
+    cy.get('button[type="submit"]').click();
+
+    // Memastikan bahwa pesan error muncul
+    cy.get('.oxd-alert-content').should('contain', 'Username cannot be empty');
+  });
+
+  it('should show an error message when password is empty', function() {
+    // Mengunjungi halaman login
+    cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+
+    // Mengisi username yang benar dan meninggalkan password kosong
+    cy.get('input[name="username"]').type('Admin');
+    cy.get('input[name="password"]').clear();
+
+    // Mengklik tombol login
+    cy.get('button[type="submit"]').click();
+
+    // Memastikan bahwa pesan error muncul
+    cy.get('.oxd-alert-content').should('contain', 'Password cannot be empty');
+  });
+
+  it('should show an error message when username is empty', function() {
+    // Mengunjungi halaman login
+    cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+
+    // Mengisi password yang benar dan meninggalkan username kosong
+    cy.get('input[name="password"]').type('admin123');
+    cy.get('input[name="username"]').clear();
+
+    // Mengklik tombol login
+    cy.get('button[type="submit"]').click();
+
+    // Memastikan bahwa pesan error muncul
+    cy.get('.oxd-alert-content').should('contain', 'Username cannot be empty');
+  });
+});
